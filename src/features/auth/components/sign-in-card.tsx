@@ -16,30 +16,28 @@ import {
   Form,
   FormControl,
   FormField,
-
   FormItem,
   FormMessage,
-
 } from "@/components/ui/form";
 import Link from "next/link";
-const formSchema = z.object({
-  email: z.string().email().trim(),
-  password: z.string().min(1,{
-    message:"Required"
-  }),
-});
+import { LoginSchema } from "../schemas";
+import { useLogin } from "../api/use-login";
+
 export const SignInCard = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { mutate } = useLogin();
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const handleSubmit = (vals:z.infer<typeof formSchema>)=>{
-       console.log(vals)
-  }
+  const handleSubmit = (vals: z.infer<typeof LoginSchema>) => {
+    mutate({
+      json:vals
+    });
+  };
   return (
     <Card className=" w-full h-full md:w-[487px] border-none shadow-sm">
       <CardHeader className=" flex items-center justify-center text-center p-7">
@@ -53,7 +51,10 @@ export const SignInCard = () => {
       </div>
       <CardContent className=" p-7">
         <Form {...form}>
-          <form className=" space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
+          <form
+            className=" space-y-4"
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
             <FormField
               name="email"
               control={form.control}
@@ -76,17 +77,13 @@ export const SignInCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="********"
-                      {...field}
-                    />
+                    <Input type="password" placeholder="********" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-         
+
             <Button
               disabled={false}
               size={"lg"}
@@ -122,7 +119,7 @@ export const SignInCard = () => {
         </Button>
       </CardContent>
       <div className=" px-7">
-         <Separator />
+        <Separator />
       </div>
       <CardContent className=" p-7 flex items-center justify-center">
         <p>
