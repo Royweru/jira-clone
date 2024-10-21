@@ -44,6 +44,7 @@ export const SignUpCard = () => {
      mutate({
       json:vals
      })
+     form.reset()
   };
   return (
     <Card className=" w-full h-full md:w-[487px] border-none shadow-sm">
@@ -122,7 +123,7 @@ export const SignUpCard = () => {
               size={"lg"}
               className=" w-full font-semibold text-white"
             >
-              Login
+              Sign Up
             </Button>
           </form>
         </Form>
