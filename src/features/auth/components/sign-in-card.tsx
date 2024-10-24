@@ -22,9 +22,11 @@ import {
 import Link from "next/link";
 import { LoginSchema } from "../schemas";
 import { useLogin } from "../api/use-login";
+import { useRouter } from "next/navigation";
 
 export const SignInCard = () => {
   const { mutate } = useLogin();
+  const router = useRouter()
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -37,6 +39,7 @@ export const SignInCard = () => {
     mutate({
       json:vals
     });
+    form.reset()
   };
   return (
     <Card className=" w-full h-full md:w-[487px] border-none shadow-sm">
