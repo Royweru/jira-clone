@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React from "react";
 import * as z from "zod";
@@ -25,8 +26,8 @@ import { useLogin } from "../api/use-login";
 import { useRouter } from "next/navigation";
 
 export const SignInCard = () => {
-  const { mutate } = useLogin();
-  const router = useRouter()
+  const { mutate, isPending } = useLogin();
+  const router = useRouter();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -37,9 +38,10 @@ export const SignInCard = () => {
 
   const handleSubmit = (vals: z.infer<typeof LoginSchema>) => {
     mutate({
-      json:vals
+      json: vals,
     });
-    form.reset()
+    form.reset();
+    
   };
   return (
     <Card className=" w-full h-full md:w-[487px] border-none shadow-sm">
@@ -88,7 +90,7 @@ export const SignInCard = () => {
             />
 
             <Button
-              disabled={false}
+              disabled={isPending}
               size={"lg"}
               type="submit"
               className=" w-full font-semibold text-white"

@@ -20,6 +20,7 @@ export const useLogout = ()=>{
         },
         onSuccess:()=>{
             window.location.reload()
+            queryClient.invalidateQueries({queryKey:["current"]})
         }
     })
     return mutation
