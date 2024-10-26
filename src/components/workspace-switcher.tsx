@@ -5,8 +5,17 @@ import {RiAddCircleFill} from 'react-icons/ri'
 import React from 'react'
 import { Select,SelectContent,SelectItem,SelectValue,SelectTrigger } from './ui/select'
 import { WorkspaceAvatar } from '@/features/workspaces/components/workspace-avatar'
+import { useRouter } from 'next/navigation'
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
+import { useCreateWorkspaceModal } from '@/features/workspaces/hooks/use-create-workspace-modal'
 export const WorkspaceSwitcher = () => {
+  const workspaceId = useWorkspaceId()
+  const router = useRouter()
     const {data:workspaces} = useGetWorkspaces()
+  const{ open} = useCreateWorkspaceModal()
+    const onSelect = (id:string)=>{
+      router.push(`/workspaces/${id}`)
+    }
     
   return (
     <div className=' flex flex-col gap-y-2'>
@@ -14,9 +23,9 @@ export const WorkspaceSwitcher = () => {
        <p className='text-xs uppercase text-neutral-500'>
         Workspaces
        </p>
-       <RiAddCircleFill  className=' size-5 text-neutral-500 cursor-pointer hover:opacity-75'/>
+       <RiAddCircleFill onClick={open} className=' size-5 text-neutral-500 cursor-pointer hover:opacity-75'/>
     </div>
-    <Select>
+    <Select onValueChange={onSelect} value={workspaceId}>
         <SelectTrigger className=' w-full bg-neutral-400 font-medium p-1'>
                  <SelectValue placeholder="No workspaces selected"/>
 
