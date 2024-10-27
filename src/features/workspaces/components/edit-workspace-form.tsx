@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import React, { useRef } from "react";
 import { z } from "zod";
-import { createWorkspaceSchema } from "../schemas";
+import {  updateWorkspaceSchema } from "../schemas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
@@ -23,28 +23,32 @@ import Image from "next/image";
 import { ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Workspace } from "../types";
 
-interface CreateWorkspaceFormProps {
+interface EditWorkspaceFormProps {
   onCancel?: () => void;
+  initialValues:Workspace
 }
-export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormProps) => {
   const router = useRouter()
   const { mutate, isPending } = useCreateWorkspace();
   const inputRef = useRef<HTMLInputElement>(null);
-  const form = useForm<z.infer<typeof createWorkspaceSchema>>({
-    resolver: zodResolver(createWorkspaceSchema),
-    defaultValues: {
-      name: "",
+  const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
+    resolver: zodResolver(updateWorkspaceSchema),
+    defaultValues:{
+      ...initialValues,
+      image:initialValues.imageUrl ??""
     },
   });
-  const onSubmit = (vals: z.infer<typeof createWorkspaceSchema>) => {
+  const onSubmit = (vals: z.infer<typeof updateWorkspaceSchema>) => {
     const finalValues = {
       ...vals,
       image: vals.image instanceof File ? vals.image : "",
     };
     mutate(
       {
-        form: finalValues,
+        form:finalValues,
+        param:{workspaceId:initialValues.$id}
       },
       {
         onSuccess({data}) {
@@ -67,7 +71,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
     <Card className=" w-full h-full border-none shadow-none rounded-md">
       <CardHeader className=" flex p-7">
         <CardTitle className=" text-xl font-bold">
-          Create new workspace
+           {initialValues.name}
         </CardTitle>
       </CardHeader>
       <div className=" px-7">
