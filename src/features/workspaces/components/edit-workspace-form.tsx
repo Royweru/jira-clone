@@ -20,10 +20,11 @@ import { Button } from "@/components/ui/button";
 import { useCreateWorkspace } from "../api/use-create-workspace";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
-import { ImageIcon } from "lucide-react";
+import { ArrowLeft, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Workspace } from "../types";
+import { useUpdateWorkspace } from "../api/use-update-workspace";
 
 interface EditWorkspaceFormProps {
   onCancel?: () => void;
@@ -31,7 +32,7 @@ interface EditWorkspaceFormProps {
 }
 export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormProps) => {
   const router = useRouter()
-  const { mutate, isPending } = useCreateWorkspace();
+  const { mutate, isPending } = useUpdateWorkspace();
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     resolver: zodResolver(updateWorkspaceSchema),
@@ -52,11 +53,7 @@ export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormP
       },
       {
         onSuccess({data}) {
-          form.reset();
           router.push(`/workspaces/${data.$id}`)
-        },
-        onError() {
-          toast.error("Could not create workspace");
         },
       }
     );
@@ -69,7 +66,11 @@ export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormP
   };
   return (
     <Card className=" w-full h-full border-none shadow-none rounded-md">
-      <CardHeader className=" flex p-7">
+      <CardHeader className=" flex flex-row items-center gap-x-4 p-7 space-y-0">
+        <Button size={"sm"} variant={"secondary"} onClick={onCancel?onCancel:()=> router.push(`/workspaces/${initialValues.$id}`)}>
+          Back
+          <ArrowLeft className=" size-4 mr-2"/>
+        </Button>
         <CardTitle className=" text-xl font-bold">
            {initialValues.name}
         </CardTitle>
@@ -137,7 +138,21 @@ export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormP
                           onChange={handleImageChange}
                           disabled={isPending}
                         />
-                        <Button
+                         {field.value?(
+                            <Button
+                            type="button"
+                            disabled={isPending}
+                            variant={"destructive"}
+                            size={"xs"}
+                            className=" w-fit mt-2"
+                            onClick={() => {field.onChange(null)
+                              if(inputRef.current)inputRef.current.value =""
+                            }}
+                          >
+                            Remove image
+                          </Button>
+                        ):(
+                          <Button
                           type="button"
                           disabled={isPending}
                           variant={"teritary"}
@@ -147,6 +162,8 @@ export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormP
                         >
                           Upload Image
                         </Button>
+                        )
+                        }
                       </div>
                     </div>
                   </div>
@@ -166,7 +183,7 @@ export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormP
                 Cancel
               </Button>
               <Button type="submit" size={"lg"} disabled={isPending}>
-                Create workspace
+               Save changes
               </Button>
             </div>
           </form>

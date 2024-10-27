@@ -24,9 +24,10 @@ export const useUpdateWorkspace = () => {
       return await response.json();
     },
     onSuccess: ({ data }) => {
-      toast.success("Failed to update workspace", {
+      toast.success("Updated workspace successfully !", {
         style: {
           backgroundColor: "green",
+          color:"white"
         },
       });
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
