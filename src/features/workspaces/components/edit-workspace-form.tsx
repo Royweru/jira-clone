@@ -19,12 +19,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
-import { ArrowLeft, ImageIcon } from "lucide-react";
+import { ArrowLeft, CopyIcon, ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Workspace } from "../types";
 import { useUpdateWorkspace } from "../api/use-update-workspace";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useDeleteWorkspace } from "../api/use-delete-workspace";
+import { toast } from "sonner";
+import { useResetInviteCode } from "../api/use-reset-invite-code";
 
 interface EditWorkspaceFormProps {
   onCancel?: () => void;
@@ -38,7 +40,13 @@ export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormP
     "This action cannot be undone",
     "destructive"
   )
+  const [ResetDialog,confirmReset] = useConfirm(
+    "Reset invite link",
+    "This action cannot be undone",
+    "destructive"
+  )
   const {mutate:deleteWorkspace,isPending:isDeletingWorkspace} = useDeleteWorkspace()
+  const {mutate:resetInviteCode,isPending:isResetingInviteCode} = useResetInviteCode()
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     resolver: zodResolver(updateWorkspaceSchema),
@@ -76,15 +84,34 @@ export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormP
       }
     })
   }
+
+  const handleResetInviteCode =async () => {
+    const ok = await confirmReset()
+    if(!ok) return
+    resetInviteCode({
+      param:{workspaceId:initialValues.$id}
+    },{
+      onSuccess:()=>{
+        router.refresh()
+      }
+    })
+  }
+
+  const handleCopyInviteLink = ()=>
+    navigator.clipboard.writeText(fullInviteLink)
+    .then(()=>toast.success("Invite copied to clipboard successfully!"))
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       form.setValue("image", file);
     }
   };
+  const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}`
   return (
     <div className=" flex flex-col gap-y-4">
       <DeleteDialog  />
+      <ResetDialog />
     <Card className=" w-full h-full border-none shadow-none rounded-md">
       <CardHeader className=" flex flex-row items-center gap-x-4 p-7 space-y-0">
         <Button size={"sm"} variant={"secondary"} onClick={onCancel?onCancel:()=> router.push(`/workspaces/${initialValues.$id}`)}>
@@ -214,6 +241,42 @@ export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormP
         <CardContent className=" p-7">
             <div className=" flex flex-col">
                 <h3 className=" font-bold">
+                Invite members
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                 Use the link to inivite members to your workspace
+                </p>
+                <div className=" mt-4">
+             <div className=" flex items-center gap-x-2">
+             <Input disabled value={fullInviteLink} />
+             <Button
+             onClick={handleCopyInviteLink}
+             variant={"secondary"}
+             className=" size-12"
+             >
+                   <CopyIcon  className=" size-5"/>
+             </Button>
+             </div>
+                </div>
+            <div className=" my-7">
+               <Separator />
+            </div>
+            <Button
+             className=" mt-6 w-fit ml-auto"
+             variant={"destructive"}
+             type="button"
+             disabled={isPending||isResetingInviteCode}
+             onClick={handleResetInviteCode}
+            >
+             Reset invite link
+            </Button>
+            </div>
+        </CardContent>
+    </Card>
+    <Card className=" w-full h-full border-none shadow-none">
+        <CardContent className=" p-7">
+            <div className=" flex flex-col">
+                <h3 className=" font-bold">
                 Danger zone
                 </h3>
                 <p className="text-sm text-muted-foreground">
@@ -232,6 +295,7 @@ export const EditWorkspaceForm = ({ onCancel,initialValues }: EditWorkspaceFormP
             </div>
         </CardContent>
     </Card>
+  
     </div>
   );
 };

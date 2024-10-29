@@ -7,7 +7,6 @@ import React from 'react'
 
 const SignInPage =async () => {
   const user = await  getCurrent()
-  console.log({data:user})
   if(user)  redirect("/")
   return (
     <SignInCard />
