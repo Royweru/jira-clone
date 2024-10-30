@@ -207,8 +207,7 @@ const app = new Hono()
         userId: user.$id,
       });
 
-      if (member) return;
-      c.json({ error: "Already a member" }, 400);
+      if (member) return c.json({ error: "Already a member" }, 400);
 
       const workspace = await databases.getDocument<Workspace>(
         DATABASE_ID,
@@ -218,11 +217,16 @@ const app = new Hono()
       if (workspace.inviteCode !== code)
         return c.json({ error: "Invalid invite code" }, 400);
 
-      await databases.createDocument(DATABASE_ID, MEMBERS_ID, ID.unique(), {
+      await databases.createDocument(
+        DATABASE_ID, 
+        MEMBERS_ID, 
+        ID.unique(), 
+        {
         workspaceId,
         userId: user.$id,
         role: MembersRole.MEMBER,
-      });
+      }
+    );
 
       return c.json({ data: workspace });
     }

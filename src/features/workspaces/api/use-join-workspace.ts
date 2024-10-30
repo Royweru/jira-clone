@@ -15,7 +15,7 @@ type RequestType = InferRequestType<
 export const useJoinWorkspace = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({  param,json }): Promise<ResponseType> => {
+    mutationFn: async ({  param,json }) => {
       const response = await client.api.workspaces[":workspaceId"]["join"]["$post"]({
         param,json
       });
@@ -23,7 +23,7 @@ export const useJoinWorkspace = () => {
       return await response.json();
     },
     onSuccess: ({ data }) => {
-      toast.success("Joined workspace!", {
+      toast.success(` Joined the workspace ${data.name}`, {
         style: {
           backgroundColor: "green",
           color:"white"
@@ -33,9 +33,10 @@ export const useJoinWorkspace = () => {
       queryClient.invalidateQueries({ queryKey: ["workspace", data.$id] });
     },
     onError() {
-      toast.error("Failed to join workspace", {
+      toast.error("Failed to reset invite code", {
         style: {
           backgroundColor: "red",
+          color:"white"
         },
       });
     },
