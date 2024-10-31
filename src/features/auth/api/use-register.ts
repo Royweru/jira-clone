@@ -23,10 +23,11 @@ export const useRegister = ()=>{
             }
             return await response.json()
         },
-        onSuccess(data) {
-            toast.success(`Hey ${data.data.name} you have been registered successfully`,{
+        onSuccess({data}) {
+            toast.success(`Hey ${data.name} you have been registered successfully`,{
                 style:{
-                    "backgroundColor":"green"
+                    "backgroundColor":"green",
+                    "color":"white"
                 }
             })
             router.refresh()

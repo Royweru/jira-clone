@@ -46,7 +46,7 @@ export const UserButton = () => {
         <div className=" flex flex-col justify-center items-center">
             <p className=" text-sm font-medium text-neutral-900"> 
                 {name||
-                "user"}
+                "User"}
             </p>
             <p className="text-xs text-neutral-500">
                 {email}
