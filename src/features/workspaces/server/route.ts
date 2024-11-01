@@ -174,7 +174,7 @@ const app = new Hono()
     c.json({ error: "Unauthorized" }, 401);
 
     //TODO:Delete members projects and tasks
-    const workspace = await databases.updateDocument(
+    const workspace = await databases.updateDocument<Workspace>(
       DATABASE_ID,
       WORKSPACES_ID,
       workspaceId,
