@@ -6,6 +6,7 @@ import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PencilIcon } from "lucide-react";
+import TaskViewSwitcher from "@/features/tasks/components/task-view-switcher";
 const ProjectIdPage = async ({ params }: { params: { projectId: string } }) => {
   const user = await getCurrent();
 
@@ -27,7 +28,7 @@ const ProjectIdPage = async ({ params }: { params: { projectId: string } }) => {
         <div>
           <Button variant={"secondary"} size={"sm"} asChild>
             <Link
-              href={`/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`}
+              href={`/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}/settings`}
             >
               <PencilIcon className=" size-4 mr-2" />
               Edit Project
@@ -35,6 +36,7 @@ const ProjectIdPage = async ({ params }: { params: { projectId: string } }) => {
           </Button>
         </div>
       </div>
+      <TaskViewSwitcher />
     </div>
   );
 };

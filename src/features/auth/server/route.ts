@@ -22,7 +22,7 @@ const app = new Hono()
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 30,
+      maxAge: 60 * 60 * 24 * 2,
     });
     return c.json({ success: true });
   })
@@ -37,7 +37,7 @@ const app = new Hono()
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 30,
+      maxAge: 60 * 60 * 24 * 2,
     });
 
     return c.json({ success: "Registered", data: user });
