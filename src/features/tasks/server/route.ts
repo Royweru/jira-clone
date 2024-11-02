@@ -18,10 +18,10 @@ const app = new Hono()
       "query",
       z.object({
         workspaceId: z.string(),
-        projectId: z.string(),
-        assigneeId: z.string(),
+        projectId: z.string().nullish() ,
+        assigneeId: z.string().nullish(),
         status: z.nativeEnum(TASKSTATUS).nullish(),
-        search: z.string(),
+        search: z.string().nullish(),
         dueDate: z.string().nullish(),
       })
     ),
@@ -159,6 +159,7 @@ const app = new Hono()
         TASKS_ID,
         ID.unique(),
         {
+          name,
           status,
           assigneeId,
           projectId,
