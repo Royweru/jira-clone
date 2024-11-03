@@ -2,6 +2,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { TASKSTATUS } from "@/features/tasks/types"
 
 const badgeVariants = cva(
   "inline-flex items-center rounded-md border border-zinc-200 px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 dark:border-zinc-800 dark:focus:ring-zinc-300",
@@ -15,6 +16,11 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-red-500 text-zinc-50 shadow hover:bg-red-500/80 dark:bg-red-900 dark:text-zinc-50 dark:hover:bg-red-900/80",
         outline: "text-zinc-950 dark:text-zinc-50",
+        [TASKSTATUS.TODO]:"border-transparent bg-red-400 text-primary hover:bg-red-400/80",
+        [TASKSTATUS.IN_PROGRESS]:"border-transparent bg-yellow-400 text-primary hover:bg-yellow-400/80",
+        [TASKSTATUS.IN_REVIEW]:"border-transparent bg-blue-400 text-primary hover:bg-blue-400/80",
+        [TASKSTATUS.DONE]:"border-transparent bg-emerald-400 text-primary hover:bg-emerald-400/80",
+        [TASKSTATUS.BACKLOG]:"border-transparent bg-pink-400 text-primary hover:bg-pink-400/80",
       },
     },
     defaultVariants: {

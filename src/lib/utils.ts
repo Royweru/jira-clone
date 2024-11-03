@@ -15,3 +15,9 @@ export const generateInviteCode = (length: number) => {
   }
   return result;
 };
+
+
+export function snakeCaseToTitleCase(str:string){
+  return str.toLocaleLowerCase()
+   .replace(/\b\w/g,(char)=>char.toUpperCase())
+}
